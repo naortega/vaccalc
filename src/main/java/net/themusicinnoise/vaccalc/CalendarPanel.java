@@ -2,19 +2,33 @@ package net.themusicinnoise.vaccalc;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.DayOfWeek;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CalendarPanel extends JPanel {
     private YearMonth currentMonth;
     private final int cellHeight = 60;
     private final int cellWidth = 80;
+    private final Set<LocalDate> selectedDates = new HashSet<>();
 
     public CalendarPanel() {
         this.currentMonth = YearMonth.now();
         setPreferredSize(new Dimension(7 * cellWidth, 8 * cellHeight));
         setBackground(Color.WHITE);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                LocalDate clickedDate = getDateAtPoint(e.getX(), e.getY());
+                if (clickedDate != null) {
+                    toggleSelection(clickedDate);
+                }
+            }
+        });
     }
 
     public void previousMonth() {
@@ -34,6 +48,51 @@ public class CalendarPanel extends JPanel {
     public void setCurrentMonth(YearMonth month) {
         currentMonth = month;
         repaint();
+    }
+
+    public Set<LocalDate> getSelectedDates() {
+        return new HashSet<>(selectedDates);
+    }
+
+    public void setSelectedDates(Set<LocalDate> dates) {
+        selectedDates.clear();
+        selectedDates.addAll(dates);
+        repaint();
+    }
+
+    public void clearSelection() {
+        selectedDates.clear();
+        repaint();
+    }
+
+    private void toggleSelection(LocalDate date) {
+        if (selectedDates.contains(date)) {
+            selectedDates.remove(date);
+        } else {
+            selectedDates.add(date);
+        }
+        repaint();
+    }
+
+    private LocalDate getDateAtPoint(int x, int y) {
+        int row = y / cellHeight;
+        int col = x / cellWidth;
+
+        if (row == 0 || col < 0 || col >= 7 || row < 1 || row > 6) {
+            return null;
+        }
+
+        LocalDate firstDay = currentMonth.atDay(1);
+        int firstDayOfWeek = firstDay.getDayOfWeek().getValue() % 7;
+        int daysInMonth = currentMonth.lengthOfMonth();
+
+        int dayNumber = (row - 1) * 7 + col - firstDayOfWeek + 1;
+
+        if (dayNumber < 1 || dayNumber > daysInMonth) {
+            return null;
+        }
+
+        return currentMonth.atDay(dayNumber);
     }
 
     @Override
@@ -82,6 +141,12 @@ public class CalendarPanel extends JPanel {
 
             LocalDate cellDate = currentMonth.atDay(day);
             boolean isToday = cellDate.equals(today);
+            boolean isSelected = selectedDates.contains(cellDate);
+
+            if (isSelected) {
+                g.setColor(new Color(173, 216, 230));
+                g.fillRect(x, y, cellWidth, cellHeight);
+            }
 
             if (isToday) {
                 g.setColor(new Color(255, 200, 100));
