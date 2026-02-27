@@ -6,7 +6,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.DayOfWeek;
 import java.util.HashSet;
 import java.util.Set;
 
