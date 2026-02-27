@@ -10,12 +10,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CalendarPanel extends JPanel {
+    private PointEngine pointEngine;
     private YearMonth currentMonth;
     private final int cellHeight = 60;
     private final int cellWidth = 80;
     private final Set<LocalDate> selectedDates = new HashSet<>();
 
-    public CalendarPanel() {
+    public CalendarPanel(PointEngine pointEngine) {
+        this.pointEngine = pointEngine;
         this.currentMonth = YearMonth.now();
         setPreferredSize(new Dimension(7 * cellWidth, 8 * cellHeight));
         setBackground(Color.WHITE);
@@ -77,7 +79,13 @@ public class CalendarPanel extends JPanel {
     }
 
     public double getTotalPoints() {
-        return selectedDates.size() * 1.0;
+        double totalPoints = 0.0;
+
+        for (LocalDate date : selectedDates) {
+            totalPoints += pointEngine.getPointsOfDay(date);
+        }
+
+        return totalPoints;
     }
 
     private LocalDate getDateAtPoint(int x, int y) {
@@ -168,7 +176,7 @@ public class CalendarPanel extends JPanel {
             int textY = y + (cellHeight - fm.getHeight()) / 2 + fm.getAscent() - 8;
             g.drawString(dayStr, textX, textY);
 
-            String pointsStr = "(1.0)";
+            String pointsStr = "(" + pointEngine.getPointsOfDay(cellDate) + ")";
             Font smallFont = new Font("Arial", Font.PLAIN, 10);
             FontMetrics smallFm = g.getFontMetrics(smallFont);
             g.setFont(smallFont);

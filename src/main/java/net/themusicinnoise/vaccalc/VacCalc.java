@@ -9,6 +9,7 @@ public class VacCalc extends JFrame {
     private CalendarPanel calendarPanel;
     private JLabel monthLabel;
     private JLabel pointsLabel;
+    private PointEngine pointEngine;
 
     public VacCalc() {
         setTitle("VacCalc");
@@ -29,7 +30,8 @@ public class VacCalc extends JFrame {
         menuBar.add(appMenu);
         setJMenuBar(menuBar);
 
-        calendarPanel = new CalendarPanel();
+        pointEngine = new PointEngine();
+        calendarPanel = new CalendarPanel(pointEngine);
 
         JPanel headerPanel = createHeaderPanel();
         JPanel footerPanel = createFooterPanel();
