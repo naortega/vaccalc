@@ -2,6 +2,7 @@ package net.themusicinnoise.vaccalc;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.time.YearMonth;
 
 public class VacCalc extends JFrame {
@@ -14,6 +15,18 @@ public class VacCalc extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu appMenu = new JMenu("VacCalc");
+        JMenuItem exitButton = new JMenuItem("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        appMenu.add(exitButton);
+        menuBar.add(appMenu);
+        setJMenuBar(menuBar);
 
         calendarPanel = new CalendarPanel();
 
