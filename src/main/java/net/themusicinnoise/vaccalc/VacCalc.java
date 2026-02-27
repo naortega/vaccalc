@@ -19,14 +19,14 @@ public class VacCalc extends JFrame {
 
         JMenuBar menuBar = new JMenuBar();
         JMenu appMenu = new JMenu("VacCalc");
-        JMenuItem exitButton = new JMenuItem("Exit");
-        exitButton.addActionListener(new ActionListener() {
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
-        appMenu.add(exitButton);
+        appMenu.add(exitItem);
         menuBar.add(appMenu);
         setJMenuBar(menuBar);
 
