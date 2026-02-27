@@ -87,8 +87,8 @@ public class VacCalc extends JFrame {
 
     private void updateMonthLabel() {
         YearMonth current = calendarPanel.getCurrentMonth();
-        monthLabel.setText(String.format("%s %d", 
-            current.getMonth().toString(), 
+        monthLabel.setText(String.format("%s %d",
+            current.getMonth().toString(),
             current.getYear()));
     }
 
