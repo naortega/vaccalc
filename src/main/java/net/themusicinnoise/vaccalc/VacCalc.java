@@ -7,6 +7,7 @@ import java.time.YearMonth;
 public class VacCalc extends JFrame {
     private CalendarPanel calendarPanel;
     private JLabel monthLabel;
+    private JLabel pointsLabel;
 
     public VacCalc() {
         setTitle("VacCalc");
@@ -17,12 +18,16 @@ public class VacCalc extends JFrame {
         calendarPanel = new CalendarPanel();
 
         JPanel headerPanel = createHeaderPanel();
+        JPanel footerPanel = createFooterPanel();
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(calendarPanel, BorderLayout.CENTER);
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
         pack();
+
+        calendarPanel.addPropertyChangeListener("selectedDates", e -> updatePointsLabel());
     }
 
     private JPanel createHeaderPanel() {
@@ -65,11 +70,31 @@ public class VacCalc extends JFrame {
         return headerPanel;
     }
 
+    private JPanel createFooterPanel() {
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        footerPanel.setBackground(new Color(230, 230, 230));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        pointsLabel = new JLabel();
+        pointsLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        pointsLabel.setHorizontalAlignment(JLabel.CENTER);
+
+        updatePointsLabel();
+        footerPanel.add(pointsLabel, BorderLayout.CENTER);
+
+        return footerPanel;
+    }
+
     private void updateMonthLabel() {
         YearMonth current = calendarPanel.getCurrentMonth();
         monthLabel.setText(String.format("%s %d", 
             current.getMonth().toString(), 
             current.getYear()));
+    }
+
+    private void updatePointsLabel() {
+        double points = calendarPanel.getTotalPoints();
+        pointsLabel.setText(String.format("Total Points: %.1f", points));
     }
 
     public static void main(String[] args) {

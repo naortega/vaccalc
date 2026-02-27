@@ -57,11 +57,13 @@ public class CalendarPanel extends JPanel {
     public void setSelectedDates(Set<LocalDate> dates) {
         selectedDates.clear();
         selectedDates.addAll(dates);
+        firePropertyChange("selectedDates", null, selectedDates);
         repaint();
     }
 
     public void clearSelection() {
         selectedDates.clear();
+        firePropertyChange("selectedDates", null, selectedDates);
         repaint();
     }
 
@@ -71,7 +73,12 @@ public class CalendarPanel extends JPanel {
         } else {
             selectedDates.add(date);
         }
+        firePropertyChange("selectedDates", null, selectedDates);
         repaint();
+    }
+
+    public double getTotalPoints() {
+        return selectedDates.size() * 1.0;
     }
 
     private LocalDate getDateAtPoint(int x, int y) {
@@ -158,8 +165,16 @@ public class CalendarPanel extends JPanel {
 
             String dayStr = String.valueOf(day);
             int textX = x + (cellWidth - fm.stringWidth(dayStr)) / 2;
-            int textY = y + (cellHeight - fm.getHeight()) / 2 + fm.getAscent();
+            int textY = y + (cellHeight - fm.getHeight()) / 2 + fm.getAscent() - 8;
             g.drawString(dayStr, textX, textY);
+
+            String pointsStr = "(1.0)";
+            Font smallFont = new Font("Arial", Font.PLAIN, 10);
+            FontMetrics smallFm = g.getFontMetrics(smallFont);
+            g.setFont(smallFont);
+            int pointsX = x + (cellWidth - smallFm.stringWidth(pointsStr)) / 2;
+            int pointsY = textY + fm.getHeight();
+            g.drawString(pointsStr, pointsX, pointsY);
 
             col++;
             if (col == 7) {
