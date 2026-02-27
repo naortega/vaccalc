@@ -149,7 +149,10 @@ public class CalendarPanel extends JPanel {
             boolean isToday = cellDate.equals(today);
             boolean isSelected = selectedDates.contains(cellDate);
 
-            if (isSelected) {
+            if (isSelected && isToday) {
+                g.setColor(new Color(123, 166, 180));
+                g.fillRect(x, y, cellWidth, cellHeight);
+            } else if (isSelected) {
                 g.setColor(new Color(173, 216, 230));
                 g.fillRect(x, y, cellWidth, cellHeight);
             } else if (isToday) {
