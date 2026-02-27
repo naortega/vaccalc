@@ -152,9 +152,7 @@ public class CalendarPanel extends JPanel {
             if (isSelected) {
                 g.setColor(new Color(173, 216, 230));
                 g.fillRect(x, y, cellWidth, cellHeight);
-            }
-
-            if (isToday) {
+            } else if (isToday) {
                 g.setColor(new Color(255, 200, 100));
                 g.fillRect(x, y, cellWidth, cellHeight);
             }
