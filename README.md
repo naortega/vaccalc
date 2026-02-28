@@ -24,7 +24,7 @@ mvn package
 Using Maven:
 
 ```bash
-mvn exec:java@com.calendar.CalendarApp
+mvn exec:java
 ```
 
 Using Java directly:
