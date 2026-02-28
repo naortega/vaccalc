@@ -19,6 +19,26 @@ public class VacCalc extends JFrame {
 
         JMenuBar menuBar = new JMenuBar();
         JMenu appMenu = new JMenu("VacCalc");
+        JMenuItem importItem = new JMenuItem("Import points");
+        importItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                JFileChooser fileChooser = new JFileChooser();
+                int ret = fileChooser.showOpenDialog(VacCalc.this);
+                if(ret == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        pointEngine.importPointsFile(fileChooser.getSelectedFile());
+                    } catch(RuntimeException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(VacCalc.this, ex.getMessage(), "Parsing Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        pointEngine.reset();
+                    }
+                }
+                calendarPanel.repaint();
+            }
+        });
+        appMenu.add(importItem);
         JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(new ActionListener() {
             @Override
@@ -110,7 +130,7 @@ public class VacCalc extends JFrame {
 
     private void updatePointsLabel() {
         double points = calendarPanel.getTotalPoints();
-        pointsLabel.setText(String.format("Total Points: %.1f", points));
+        pointsLabel.setText(String.format("Total Points: %.3f", points));
     }
 
     public static void main(String[] args) {
