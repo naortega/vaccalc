@@ -69,6 +69,9 @@ public class CalendarPanel extends JPanel {
     }
 
     private void toggleSelection(LocalDate date) {
+        if (pointEngine.getPointsOfDay(date) == 0.0)
+            return;
+
         if (selectedDates.contains(date)) {
             selectedDates.remove(date);
         } else {
@@ -156,8 +159,12 @@ public class CalendarPanel extends JPanel {
             LocalDate cellDate = currentMonth.atDay(day);
             boolean isToday = cellDate.equals(today);
             boolean isSelected = selectedDates.contains(cellDate);
+            double points = pointEngine.getPointsOfDay(cellDate);
 
-            if (isSelected && isToday) {
+            if (points == 0.0) {
+                g.setColor(new Color(255, 100, 100));
+                g.fillRect(x, y, cellWidth, cellHeight);
+            } else if (isSelected && isToday) {
                 g.setColor(new Color(123, 166, 180));
                 g.fillRect(x, y, cellWidth, cellHeight);
             } else if (isSelected) {
@@ -176,7 +183,7 @@ public class CalendarPanel extends JPanel {
             int textY = y + (cellHeight - fm.getHeight()) / 2 + fm.getAscent() - 8;
             g.drawString(dayStr, textX, textY);
 
-            String pointsStr = "(" + pointEngine.getPointsOfDay(cellDate) + ")";
+            String pointsStr = "(" + points + ")";
             Font smallFont = new Font("Arial", Font.PLAIN, 10);
             FontMetrics smallFm = g.getFontMetrics(smallFont);
             g.setFont(smallFont);
