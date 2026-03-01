@@ -86,7 +86,7 @@ public class PointEngine {
                 if (defaultMatcher.find()) {
                     defaultPoints = Double.parseDouble(defaultMatcher.group(1));
                 } else {
-                    rules.add(new PointRule(line));
+                    rules.addFirst(new PointRule(line));
                 }
             }
         } catch (IOException e) {
@@ -97,12 +97,11 @@ public class PointEngine {
     public void reset() { rules.clear(); }
 
     public double getPointsOfDay(LocalDate date) {
-        double points = defaultPoints;
         for (PointRule rule : rules) {
             if (rule.applies(date)) {
-                points = rule.getPoints();
+                return rule.getPoints();
             }
         }
-        return points;
+        return defaultPoints;
     }
 }
