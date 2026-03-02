@@ -1,0 +1,59 @@
+<html>
+	<h1>VacCalc Manual</h1>
+	<hr />
+	<p>VacCalc assigns points to each day on the basis of the rules found in a
+	file which is imported via the “VacCalc &gt; Import points” menu item. This
+	file must be written manually. What follows are descriptions on how to write
+	this file.</p>
+	<h2>Rules</h2>
+	<p>There are a total of four different kinds of rules possible: default,
+	date, day-of-week, and month. Rules are applied with a priority for the last
+	defined rule, with the exception of the default rule which is only used if
+	no other rule applies.</p>
+	<h3>Default Rule</h3>
+	<p>Definition: <code>default <i>points</i></code></p>
+	<p>The default rule establishes the default point value for every day of the
+	year. E.g. <code>default 1.0</code> sets the default points to
+	<code>1.0</code>.
+	<h3>Date Rule</h3>
+	<p>Definition: <code><i>YYYY</i>-<i>MM</i>-<i>DD</i> <i>points</i></code></p>
+	<p>A date rule specifies the points which a specific date has. E.g.
+	<code>2026-12-24 0.5</code> would set Christmas Eve (December
+	24<sup>th</sup>) of 2026 to <code>0.5</code> points</p>
+	<h3>Day-Of-Week Rule</h3>
+	<p>Definition: <code>dow=<i>day</i> <i>points</i></p>
+	<p>A day-of-week rule specifies the points for all days of the year which
+	coincide with a particular day of the week. This day of the week is
+	specified using the three-letter format, such as <code>Fri</code> for
+	Friday. E.g. <code>dow=Fri 0.8</code> would set all Fridays of the year to
+	<code>0.8</code> points.</p>
+	<h3>Month Rule</h3>
+	<p>Definition: <code>m=<i>month</i> <i>points</i></p>
+	<p>A month rule establishes the same points for every day of a given month.
+	E.g. <code>m=Aug 0.8</code> sets all the days of the month of August to
+	<code>0.8</code> points.
+	<h3>Zero Point Rules</h3>
+	<p>Rules that have zero points allocated to them (i.e. <code>0.0</code>) are
+	considered <em>free days</em>, and as such are disabled. This could be
+	assigned to days such as Christmas or the Weekends (Saturday and
+	Sunday).</p>
+	<h3>Comments</h3>
+	<p>Definition: <code># <i>comment</i></p>
+	<p>Comments are supported in single lines starting with the <code>#</code>
+	character. Everything after that is ignored by the parser.</p>
+	<h3>Example</h3>
+	<code>
+		default 1.0<br />
+		dow=Fri 0.825<br />
+		m=Jul 0.825<br />
+		m=Aug 0.825<br />
+		2026-12-24 0.5<br />
+		2026-12-31 0.5<br />
+		<br />
+		# Weekends and Holidays<br />
+		dow=Sun 0.0<br />
+		dow=Sat 0.0<br />
+		2026-01-01 0.0<br />
+		2026-12-25 0.0
+	</code>
+</html>

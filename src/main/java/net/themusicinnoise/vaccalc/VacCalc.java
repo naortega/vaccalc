@@ -52,6 +52,21 @@ public class VacCalc extends JFrame {
         appMenu.add(exitItem);
         menuBar.add(appMenu);
         JMenu helpMenu = new JMenu("Help");
+        JMenuItem manualItem = new JMenuItem("Usage Manual");
+        manualItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("manual.html")));
+                String manualText = br.lines().collect(Collectors.joining());
+                JEditorPane textArea = new JEditorPane("text/html", manualText);
+                textArea.setEditable(false);
+                JFrame manualFrame = new JFrame("VacCalc Manual");
+                manualFrame.getContentPane().add(new JScrollPane(textArea));
+                manualFrame.setSize(500, 500);
+                manualFrame.setVisible(true);
+            }
+        });
+        helpMenu.add(manualItem);
         JMenuItem aboutItem = new JMenuItem("About");
         aboutItem.addActionListener(new ActionListener() {
             @Override
