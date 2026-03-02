@@ -82,6 +82,9 @@ public class PointEngine {
         try (BufferedReader br = new BufferedReader(new FileReader(pointsFile))) {
             String line;
             while ((line = br.readLine()) != null) {
+                if (line.isEmpty() || line.charAt(0) == '#')
+                    continue;
+
                 Matcher defaultMatcher = defaultPattern.matcher(line);
                 if (defaultMatcher.find()) {
                     defaultPoints = Double.parseDouble(defaultMatcher.group(1));
