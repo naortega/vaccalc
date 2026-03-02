@@ -3,9 +3,9 @@ package net.themusicinnoise.vaccalc;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.time.YearMonth;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class VacCalc extends JFrame {
@@ -72,10 +72,17 @@ public class VacCalc extends JFrame {
             @Override
             public void actionPerformed(ActionEvent ev) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("about.html")));
+                Properties properties = new Properties();
+                try {
+                    properties.load(getClass().getClassLoader().getResourceAsStream("project.properties"));
+                } catch (IOException e) {
+                    System.err.println("Failed to load project properties.");
+                    e.printStackTrace();
+                }
                 String aboutText = br.lines().collect(Collectors.joining());
-                JOptionPane.showMessageDialog(VacCalc.this,
-                        aboutText,
-                        "About", JOptionPane.INFORMATION_MESSAGE);
+                aboutText = aboutText.replace("VERSION", properties.getProperty("version"));
+                JOptionPane.showMessageDialog(VacCalc.this, aboutText, "About",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         });
         helpMenu.add(aboutItem);
