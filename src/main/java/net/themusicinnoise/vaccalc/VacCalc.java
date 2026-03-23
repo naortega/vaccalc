@@ -4,8 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class VacCalc extends JFrame {
@@ -42,6 +44,61 @@ public class VacCalc extends JFrame {
             }
         });
         appMenu.add(importItem);
+        appMenu.addSeparator();
+        JMenuItem exportItem = new JMenuItem("Export selected dates");
+        exportItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                if (calendarPanel.getSelectedDates().isEmpty()) {
+                    JOptionPane.showMessageDialog(VacCalc.this, "No dates selected.", "Export Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setSelectedFile(new File("vacation_dates.txt"));
+                int ret = fileChooser.showSaveDialog(VacCalc.this);
+                if(ret == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        pointEngine.exportSelectedDates(fileChooser.getSelectedFile(), calendarPanel.getSelectedDates());
+                        JOptionPane.showMessageDialog(VacCalc.this, "Dates exported successfully.", "Export Complete",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } catch(Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(VacCalc.this, ex.getMessage(), "Export Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        appMenu.add(exportItem);
+        JMenuItem importDatesItem = new JMenuItem("Import dates");
+        importDatesItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                JFileChooser fileChooser = new JFileChooser();
+                int ret = fileChooser.showOpenDialog(VacCalc.this);
+                if(ret == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        calendarPanel.clearSelection();
+                        Set<LocalDate> importedDates = pointEngine.importSelectedDates(fileChooser.getSelectedFile());
+                        if (importedDates.isEmpty()) {
+                            JOptionPane.showMessageDialog(VacCalc.this, "No valid dates found in file.", "Import Warning",
+                                    JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        calendarPanel.setSelectedDates(importedDates);
+                        JOptionPane.showMessageDialog(VacCalc.this, "Imported " + importedDates.size() + " dates.", "Import Complete",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } catch(Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(VacCalc.this, ex.getMessage(), "Import Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        appMenu.add(importDatesItem);
+        appMenu.addSeparator();
         JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(new ActionListener() {
             @Override

@@ -3,13 +3,16 @@ package net.themusicinnoise.vaccalc;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -106,5 +109,42 @@ public class PointEngine {
             }
         }
         return defaultPoints;
+    }
+
+    public void exportSelectedDates(File exportFile, Set<LocalDate> selectedDates) throws IOException {
+        try (FileWriter writer = new FileWriter(exportFile)) {
+            selectedDates.stream()
+                    .sorted()
+                    .forEach(date -> {
+                        try {
+                            writer.write(String.format("%s%n", date));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+    }
+
+    public Set<LocalDate> importSelectedDates(File importFile) throws IOException {
+        Set<LocalDate> dates = new HashSet<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(importFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.charAt(0) == '#')
+                    continue;
+
+                try {
+                    LocalDate date = LocalDate.parse(line, formatter);
+                    dates.add(date);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Invalid date format in line: '" + line + "'");
+                }
+            }
+        }
+
+        return dates;
     }
 }
