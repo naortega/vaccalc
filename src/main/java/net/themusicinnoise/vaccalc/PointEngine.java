@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 public class PointEngine {
     private double defaultPoints;
+    private static final Pattern DEFAULT_PATTERN = Pattern.compile("^default\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
 
     static private class PointRule {
         private enum RuleType {
@@ -26,9 +27,9 @@ public class PointEngine {
             DATE,
         }
 
-        static final Pattern DOW_PATTERN = Pattern.compile("dow=(sun|mon|tue|wed|thu|fri|sat)\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
-        static final Pattern MONTH_PATTERN = Pattern.compile("m=(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
-        static final Pattern DATE_PATTERN = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
+        private static final Pattern DOW_PATTERN = Pattern.compile("^dow=(sun|mon|tue|wed|thu|fri|sat)\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
+        private static final Pattern MONTH_PATTERN = Pattern.compile("^m=(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
+        private static final Pattern DATE_PATTERN = Pattern.compile("^(\\d{4}-\\d{2}-\\d{2})\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
 
         private RuleType type;
         private DayOfWeek dow;
@@ -80,15 +81,13 @@ public class PointEngine {
     }
 
     public void importPointsFile(File pointsFile) {
-        Pattern defaultPattern = Pattern.compile("default\\s+(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE);
-
         try (BufferedReader br = new BufferedReader(new FileReader(pointsFile))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.isEmpty() || line.charAt(0) == '#')
                     continue;
 
-                Matcher defaultMatcher = defaultPattern.matcher(line);
+                Matcher defaultMatcher = DEFAULT_PATTERN.matcher(line);
                 if (defaultMatcher.find()) {
                     defaultPoints = Double.parseDouble(defaultMatcher.group(1));
                 } else {
